@@ -1,0 +1,156 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              09/05/2020 14:58:10 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Include) DEFINE(FOSC_160000) D
+                    -EBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "Common.h"
+   3          #include "Delay.h"
+   4          #include "SFR_Macro.h"
+   5          #include "Function_define.h"
+   6          #include <string.h>
+   7          
+   8          char rx_data[30];
+   9          unsigned char led[]={0x00,0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
+  10          unsigned char a= 0x00;
+  11          char *Data;
+  12          int cnt=0,len;
+  13          int check=0;
+  14          int i;
+  15          
+  16          #define led1 P13
+  17          #define DATA P03
+  18          #define LATCH_CLK P17
+  19          #define SH_CLK P15
+  20          #define sang 0
+  21          #define tat 1
+  22          
+  23          //Ham dieu khien 74HC595
+  24          void IE74595_Out_Byte(unsigned char b)
+  25          {
+  26   1        unsigned char i;
+  27   1        for(i=0; i<8; i++)
+  28   1        {
+  29   2          DATA = b& (0x80>>i); // lay tung bit cua byte b gui 
+  30   2          SH_CLK=0;
+  31   2          SH_CLK=1;
+  32   2        }
+  33   1          LATCH_CLK= 0;
+  34   1          LATCH_CLK= 1;
+  35   1      }
+  36          //Ham gui ky tu
+  37          void Send(char arr[])
+  38          {
+  39   1        for(i=0;i<strlen(arr);i++)
+  40   1            {
+  41   2              Send_Data_To_UART0(arr[i]);
+  42   2            }
+  43   1      }
+  44          
+  45          //Ham digitalWrite
+  46          void digitalWrite(char x, char y){
+  47   1        if(y==1){
+  48   2          a= a|led[x];
+  49   2        }
+  50   1        if(y==0){
+  51   2          a&=~ led[x];
+  52   2        }
+  53   1      }
+  54          
+C51 COMPILER V9.60.0.0   MAIN                                                              09/05/2020 14:58:10 PAGE 2   
+
+  55          //Ngat UART
+  56          void UART_ISR(void) interrupt 4
+  57          {
+  58   1        if(RI == 1)
+  59   1        {
+  60   2            rx_data[cnt] = Receive_Data_From_UART0(); 
+  61   2            cnt++;
+  62   2            check = 1;
+  63   2            clr_RI;
+  64   2            
+  65   2        }
+  66   1        if(TI==1)
+  67   1        {
+  68   2          TI = 0;
+  69   2      
+  70   2        }
+  71   1      }
+  72          
+  73          //Ham tach chuoi
+  74          void tachChuoi(){
+  75   1        unsigned int num,trangthai=1;
+  76   1        for(i=0;i<len;i++){
+  77   2          if(Data[i]>='0'&&Data[i]<='9'){
+  78   3            num*=10;
+  79   3            num+= Data[i]-'0';
+  80   3          }
+  81   2          if(Data[i]==';') trangthai=0;
+  82   2          else{
+  83   3            if(num!=0) digitalWrite(num,trangthai);
+  84   3            num=0;
+  85   3          }
+  86   2        }
+  87   1      }
+  88          
+  89          void main(){
+  90   1        P15_Quasi_Mode;
+  91   1        P17_Quasi_Mode;
+  92   1        P03_Quasi_Mode;
+  93   1        P13_Quasi_Mode;
+  94   1        P05_Quasi_Mode;
+  95   1        InitialUART0_Timer1(9600);
+  96   1        set_TI;               // Set co TI 
+  97   1        set_EA;               // Cho phep ngat toan cuc
+  98   1        set_ES;
+  99   1        led1= sang;
+ 100   1        while(1)
+ 101   1        {
+ 102   2      //        if(check == 0)
+ 103   2      //    {
+ 104   2      //      Send("Hi");
+ 105   2      //      Send("\n");
+ 106   2      //      Timer0_Delay1ms(500);
+ 107   2      //    }
+ 108   2          
+ 109   2          if(check == 1)
+ 110   2          {
+ 111   3            Data= strtok(rx_data,"!");
+ 112   3            len=strlen(Data);
+ 113   3            Send(Data);
+ 114   3            if(rx_data[len]=='!')
+ 115   3            {
+ 116   4            tachChuoi();
+C51 COMPILER V9.60.0.0   MAIN                                                              09/05/2020 14:58:10 PAGE 3   
+
+ 117   4            Send("Gui du lieu thanh cong");
+ 118   4            }
+ 119   3            if(rx_data[len]!='!')
+ 120   3            {
+ 121   4            Send("Du lieu sai");
+ 122   4            }
+ 123   3            cnt=0;
+ 124   3            check=0;
+ 125   3          }
+ 126   2          IE74595_Out_Byte(a);
+ 127   2        }
+ 128   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    565    ----
+   CONSTANT SIZE    =     37    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     51       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

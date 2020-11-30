@@ -1,0 +1,7 @@
+".\Objects\main.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\Led7Seg_NgatTimer" 
+PRINT(".\Listings\Led7Seg_NgatTimer.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

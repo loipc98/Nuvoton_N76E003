@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\PWM_Button" 
+PRINT(".\Listings\PWM_Button.m51") RAMSIZE(256) 

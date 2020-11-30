@@ -1,0 +1,7 @@
+".\Objects\pin_interrrupt.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\PIN_Interrupt" 
+PRINT(".\Listings\PIN_Interrupt.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

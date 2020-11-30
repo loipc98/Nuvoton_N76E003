@@ -1,0 +1,13 @@
+C51 COMPILER V9.60.0.0   COMMON                                                            09/09/2020 10:16:20 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE COMMON
+OBJECT MODULE PLACED IN .\Objects\Common.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\..\..\Common\Common.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\Includ
+                    -e) DEFINE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\Listings\Common.lst) TABS(2) OBJECT(.\Objects\Common.obj)
+
+line level    source
+
+*** ERROR C318 OF ..\..\..\Common\Common.c: can't open file '..\..\..\Common\Common.c'
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

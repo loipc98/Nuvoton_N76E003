@@ -1,0 +1,7 @@
+".\Objects\crc_16.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\crc_16" 
+PRINT(".\Listings\crc_16.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

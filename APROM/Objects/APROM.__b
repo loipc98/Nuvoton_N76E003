@@ -1,0 +1,6 @@
+TRANSFER
+".\Objects\adrom.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\APROM.LIB"

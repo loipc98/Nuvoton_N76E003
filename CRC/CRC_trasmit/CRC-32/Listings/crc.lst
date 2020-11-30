@@ -1,0 +1,90 @@
+C51 COMPILER V9.60.0.0   CRC                                                               11/16/2020 15:31:41 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE CRC
+OBJECT MODULE PLACED IN .\Objects\crc.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE crc.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\Include;..\CRC-32) DEFINE
+                    -(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\Listings\crc.lst) TABS(2) OBJECT(.\Objects\crc.obj)
+
+line level    source
+
+   1          /*
+   2           *crc.c
+   3           */
+   4           
+   5          #include "crc.h"
+   6          /*
+   7          * An array containing the pre-computed intermediate result for each
+   8          * possible byte of input. This is used to speed up the computation.
+   9          */
+  10          static width_t xdata crcTable[256];
+  11           
+  12          /**
+  13           * Initialize the CRC lookup table.
+  14           * This table is used by crcCompute() to make CRC computation faster.
+  15           */
+  16          void crcInit(void)
+  17          {
+  18   1          width_t remainder;
+  19   1          width_t dividend;
+  20   1          int Bit;
+  21   1          /* Perform binary long division, a bit at a time. */
+  22   1          for(dividend = 0; dividend < 256; dividend++)
+  23   1          {
+  24   2              /* Initialize the remainder.  */
+  25   2              remainder = dividend << (WIDTH - 8);
+  26   2              /* Shift and XOR with the polynomial.   */
+  27   2              for(Bit = 0; Bit < 8; Bit++)
+  28   2              {
+  29   3                  /* Try to divide the current data bit.  */
+  30   3                  if(remainder & TOPBIT)
+  31   3                  {
+  32   4                      remainder = (remainder << 1) ^ POLYNOMIAL;
+  33   4                  }
+  34   3                  else
+  35   3                  {
+  36   4                      remainder = remainder << 1;
+  37   4                  }
+  38   3              }
+  39   2              /* Save the result in the table. */
+  40   2              crcTable[dividend] = remainder;
+  41   2          }
+  42   1      } /* crcInit() */
+  43           
+  44          /**
+  45           * Compute the CRC checksum of a binary message block.
+  46           * @para message, Data for calculation
+  47           * @para nBytes, Length of data
+  48           * @note This function expects that crcInit() has been called
+  49           *       first to initialize the CRC lookup table.
+  50           */
+  51          width_t crcCompute(unsigned char * message, unsigned int nBytes)
+  52          {
+  53   1          unsigned int offset;
+  54   1          unsigned char byte;
+C51 COMPILER V9.60.0.0   CRC                                                               11/16/2020 15:31:41 PAGE 2   
+
+  55   1          width_t remainder = INITIAL_REMAINDER;
+  56   1          /* Divide the message by the polynomial, a byte at a time. */
+  57   1          for( offset = 0; offset < nBytes; offset++)
+  58   1          {
+  59   2              byte = (remainder >> (WIDTH - 8)) ^ message[offset];
+  60   2              remainder = crcTable[byte] ^ (remainder << 8);
+  61   2          }
+  62   1          /* The final remainder is the CRC result. */
+  63   1          return (remainder ^ FINAL_XOR_VALUE);
+  64   1      } /* crcCompute() */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    189    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    512    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

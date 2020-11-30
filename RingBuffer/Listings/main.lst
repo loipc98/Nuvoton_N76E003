@@ -1,0 +1,45 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              11/11/2020 11:43:33 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Include) DEFINE(FOSC_160000) D
+                    -EBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "Common.h"
+   3          #include "Delay.h"
+   4          #include "Function_define.h"
+   5          #include "SFR_Macro.h"
+   6          
+   7          typedef struct {
+   8              uint8_t * const buffer;
+   9              int head;
+  10              int tail;
+  11              const int maxlen;
+  12          } circ_bbuf_t;
+  13          
+  14          
+  15          void main()
+  16          {
+  17   1        while(1)
+  18   1        {
+  19   2          
+  20   2        }
+  21   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      2    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

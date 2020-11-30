@@ -1,0 +1,66 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              11/16/2020 10:13:52 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\Include) DEFINE(FOSC_160
+                    -000) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "Common.h"
+   3          #include "Delay.h"
+   4          #include "Function_Define.h"
+   5          #include "SFR_Macro.h"
+   6          
+   7          #define POLY  0x07 //CRC-8 (8bit)
+   8          
+   9          unsigned char data1[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+  10          unsigned char c1;
+  11          
+  12          /*---------------------Ham tinh crc8 cho tep du lieu-------------------------------*/
+  13          uint8_t crc8(unsigned char *addr, int num)
+  14          {
+  15   1          uint8_t crc = 0x00;  //khoi tao gia tri crc ban dau
+  16   1          int i;
+  17   1          for (; num > 0; num--)              //chay lan luot cac byte du lieu
+  18   1          {
+  19   2              crc = crc ^ (*addr++);          // Xor crc voi cac byte du lieu
+  20   2              for (i = 0; i < 8; i++)             /* chuan bi de xoay 8 Bit */
+  21   2              {
+  22   3                  if (crc & 0x80)            
+  23   3                      crc = (crc << 1) ^ POLY;    /* dich va xor voi poly */
+  24   3                  else                          
+  25   3                      crc <<= 1;                  
+  26   3              }                             
+  27   2              crc &= 0xFF;                  
+  28   2          }                               
+  29   1          return(crc);                    
+  30   1      }
+  31          
+  32          void main()
+  33          {
+  34   1        InitialUART0_Timer1(9600);
+  35   1        while(1)
+  36   1        {
+  37   2          c1 = crc8(data1, 9);
+  38   2          Send_Data_To_UART0(c1);
+  39   2          Timer0_Delay1ms(1000);
+  40   2        }
+  41   1        
+  42   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    117    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

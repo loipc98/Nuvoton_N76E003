@@ -1,0 +1,123 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              09/08/2020 08:32:45 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Include) DEFINE(FOSC_160000) D
+                    -EBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "Common.h"
+   3          #include "Delay.h"
+   4          #include "SFR_Macro.h"
+   5          #include "Function_define.h"
+   6           char chu_so[]={0xEB,0x88,0xB3,0xBA,0xD8,0x7A,0x7B,0xA8,0xFB,0xFA};
+   7          #define DATA P03      //Du lieu 
+   8          #define CLK P15       //Xung 
+   9          #define LAT P17       //Chot du lieu de day ra 
+  10          #define LED1 P13
+  11          #define LED2 P12
+  12          #define LED3 P11
+  13          #define LED4 P10
+  14          #define bat  0
+  15          #define tat  1
+  16          int cnt = 0;unsigned int adc_value;
+  17          void HC595_Output(unsigned char a)
+  18          {
+  19   1        unsigned char i;
+  20   1        for (i=0; i<8;i++)
+  21   1        {
+  22   2          DATA = a & (0x80 >> i);   //Dich bit de day du lieu ra
+  23   2          CLK=0;
+  24   2          CLK=1;
+  25   2        }
+  26   1        LAT=0;
+  27   1        LAT=1;
+  28   1      }
+  29          void setup(void)
+  30          {
+  31   1        P05_Quasi_Mode;         
+  32   1        P10_Quasi_Mode;       //LED4 Output
+  33   1        P11_Quasi_Mode;       //LED3 Output
+  34   1        P12_Quasi_Mode;       //LED2 Output
+  35   1        P13_Quasi_Mode;       //LED1 Output
+  36   1        P15_Quasi_Mode;       //CLK  Output
+  37   1        P17_Quasi_Mode;       //LAT  Output
+  38   1        P03_Quasi_Mode;       //DATA Output
+  39   1        // Khoi tao ngat Timer0
+  40   1        TMOD=0x01;            //Khoi tao Timer Mode 1
+  41   1        ET0=1;                //Cho phep ngat Timer
+  42   1        EA=1;                 //Cho phep ngat toan cuc
+  43   1        TR0=1;                //Khoi tao Timer0
+  44   1        // Khoi tao ADC
+  45   1        Enable_ADC_AIN5;      //Khoi tao ADC pin 04
+  46   1      }
+  47          
+  48          void Timer0_Interrupt() interrupt 1
+  49          {
+  50   1        TH0=0xFA;       //Nap lai gia tri 
+  51   1        TL0=0xCB;
+  52   1        cnt++;
+  53   1        if(cnt==5) cnt=1;
+  54   1        if(cnt==1)
+C51 COMPILER V9.60.0.0   MAIN                                                              09/08/2020 08:32:45 PAGE 2   
+
+  55   1        {
+  56   2          LED4=tat;
+  57   2          LED1=tat;
+  58   2          HC595_Output(chu_so[adc_value/1000]);
+  59   2          LED4=bat;
+  60   2        }
+  61   1       if(cnt==2)
+  62   1        {
+  63   2          LED3=tat;
+  64   2          LED4=tat;
+  65   2          HC595_Output(chu_so[(adc_value%1000)/100]);
+  66   2          LED3=bat;
+  67   2        }
+  68   1       if(cnt==3)
+  69   1        {
+  70   2          LED2=tat;
+  71   2          LED3=tat;
+  72   2          HC595_Output(chu_so[(adc_value%100)/10]);
+  73   2          LED2=bat;
+  74   2        }
+  75   1       if(cnt==4)
+  76   1        {
+  77   2          LED1=tat;
+  78   2          LED2=tat;
+  79   2          HC595_Output(chu_so[adc_value%10]);
+  80   2          LED1=bat;
+  81   2        }
+  82   1      }
+  83          void main(void)
+  84          {
+  85   1        setup();
+  86   1        while(1)
+  87   1        {
+  88   2          P05=1;                    
+  89   2          clr_ADCF;                 // Xoa co, neu ADCF=1 thi ko the chuyen doi 
+  90   2          set_ADCS;                 // ADCS=1 trong suot qua trinh chuyen doi, 
+  91   2          while(ADCF == 0);         // ADCF = 0, chuyen doi hoan tat
+  92   2          adc_value = ADCRH;
+  93   2          adc_value <<= 4;
+  94   2          adc_value |= ADCRL;         // Doc gia tri ADC
+  95   2          Timer0_Delay1ms(100);
+  96   2        }
+  97   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    389    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

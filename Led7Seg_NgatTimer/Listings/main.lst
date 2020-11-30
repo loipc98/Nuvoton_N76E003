@@ -1,0 +1,112 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              09/03/2020 11:32:27 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Include) DEFINE(FOSC_160000) D
+                    -EBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "Common.h"
+   3          #include "Function_define.h"
+   4          #include "Delay.h"
+   5          #include "SFR_Macro.h"
+   6          
+   7          char so[]= {0xEB, 0x88, 0xB3, 0xBA, 0xD8, 0x7A, 0x7B, 0xA8, 0xFB, 0xFA};
+   8          #define led1 P13
+   9          #define led2 P12
+  10          #define led3 P11
+  11          #define led4 P10
+  12          #define sang 0
+  13          #define tat 1
+  14          #define DATA P03
+  15          #define LATCH_CLK P17
+  16          #define SH_CLK P15
+  17          
+  18          unsigned int i=0;
+  19          unsigned int a=0;
+  20          unsigned char j=0;
+  21          
+  22          void IE74595_Out_Byte(unsigned char b)
+  23          {
+  24   1        unsigned char i;
+  25   1        for(i=0; i<8; i++)
+  26   1        {
+  27   2          DATA = b& (0x80>>i); // lay tung bit cua byte b gui 
+  28   2          SH_CLK=0;
+  29   2          SH_CLK=1;
+  30   2        }
+  31   1          LATCH_CLK= 0;
+  32   1          LATCH_CLK= 1;
+  33   1      }
+  34          void ngatTimer() interrupt 1{
+  35   1        TH0= 0xFA;
+  36   1        TL0= 0xCB;
+  37   1        TR0= 1;
+  38   1        j++;
+  39   1         if(j==5) j=1;
+  40   1         if(j==1){
+  41   2           led4= tat;
+  42   2           led1=tat;
+  43   2          IE74595_Out_Byte(so[a/1000]);
+  44   2          led4 = sang;
+  45   2         }
+  46   1         if(j==2){
+  47   2           led3=tat;
+  48   2           led4=tat;
+  49   2          IE74595_Out_Byte(so[(a%1000)/100]);
+  50   2          led3=sang;
+  51   2         }
+  52   1         if(j==3){
+  53   2           led2= tat;
+  54   2           led3=tat;
+C51 COMPILER V9.60.0.0   MAIN                                                              09/03/2020 11:32:27 PAGE 2   
+
+  55   2          IE74595_Out_Byte(so[(a%100)/10]);
+  56   2          led2 = sang;
+  57   2         }
+  58   1         if(j==4){
+  59   2           led1= tat;
+  60   2           led2= tat;
+  61   2          IE74595_Out_Byte(so[a%10]);
+  62   2          led1= sang;
+  63   2         }
+  64   1        }
+  65          void main(){
+  66   1        P15_Quasi_Mode;
+  67   1        P17_Quasi_Mode;
+  68   1        P03_Quasi_Mode;
+  69   1        P10_Quasi_Mode;
+  70   1        P11_Quasi_Mode;
+  71   1        P12_Quasi_Mode;
+  72   1        P13_Quasi_Mode;
+  73   1        P05_Quasi_Mode;
+  74   1        TMOD = 0x01; //timer 0, che do 1
+  75   1        ET0=1;
+  76   1        TR0=1;
+  77   1        EA=1;
+  78   1        a=0;
+  79   1        led1=led2=led3=led4=tat;
+  80   1        while(1){
+  81   2          P05=~P05;
+  82   2          a++;
+  83   2          Timer0_Delay1ms(1000);
+  84   2          if(a>9999) a=0;
+  85   2        }
+  86   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    352    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     15    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

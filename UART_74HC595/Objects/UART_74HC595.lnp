@@ -1,0 +1,7 @@
+".\Objects\main.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\UART_74HC595" 
+PRINT(".\Listings\UART_74HC595.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

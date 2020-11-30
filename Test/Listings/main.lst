@@ -1,0 +1,71 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              08/28/2020 10:23:15 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Include) DEFINE(FOSC_160000) D
+                    -EBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "Common.h"
+   3          #include "Delay.h"
+   4          #include "SFR_Macro.h"
+   5          #include "Function_define.h"
+   6          #include "string.h"
+   7          #include "stdlib.h"
+   8          char rx_data;
+   9          void SerialPort0_ISR(void) interrupt 4 
+  10          {
+  11   1          if (RI==1) 
+  12   1          {                                       /* if reception occur */
+  13   2              rx_data= Receive_Data_From_UART0();
+  14   2              if(rx_data == '1') P05 = 0xff;
+  15   2              if(rx_data == '0') P05 = 0x00;
+  16   2              Send_Data_To_UART0(rx_data);
+  17   2              clr_RI;                             /* clear reception flag for next reception */
+  18   2          }
+  19   1          if(TI==1)
+  20   1          {
+  21   2              clr_TI;                             /* if emission occur */
+  22   2          }
+  23   1      }
+  24          
+  25          void sendChuoi(char *a){
+  26   1        int i,n;
+  27   1        n= strlen(a);
+  28   1        for(i=0;i<n;i++){
+  29   2          Send_Data_To_UART0(a[i]);
+  30   2        }
+  31   1      }
+  32          int c=123;
+  33          char b[5];
+  34          void main(){
+  35   1        InitialUART0_Timer1(9600);
+  36   1        P05_Quasi_Mode;
+  37   1        clr_TI; 
+  38   1        set_ES;           //enable UART interrupt
+  39   1        set_EA;           //enable global interrupt
+  40   1      //  itoa(c,b,10);
+  41   1        while(1){
+  42   2          sendChuoi(b);
+  43   2          Timer0_Delay1ms(200);
+  44   2        }
+  45   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    200    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8       7
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.0.0   MAIN                                                              08/28/2020 10:23:15 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,7 @@
+".\Objects\adrom.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\APROM" 
+PRINT(".\Listings\APROM.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

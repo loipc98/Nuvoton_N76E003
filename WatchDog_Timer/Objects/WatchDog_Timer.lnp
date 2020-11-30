@@ -1,0 +1,7 @@
+".\Objects\watchdog.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\WatchDog_Timer" 
+PRINT(".\Listings\WatchDog_Timer.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

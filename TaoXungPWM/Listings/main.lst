@@ -1,0 +1,71 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              08/26/2020 14:36:28 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Include) DEFINE(FOSC_160000) D
+                    -EBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "Common.h"
+   3          #include "Delay.h"
+   4          #include "SFR_Macro.h"
+   5          #include "Function_define.h"
+   6          
+   7          void PWM_set_period(unsigned int period_value)
+   8          {
+   9   1        PWMPL = period_value & 0x00FF;
+  10   1        PWMPH = (period_value & 0xFF00)>>8;
+  11   1      }
+  12          
+  13          void PWM_set_on(unsigned int on_value)
+  14          {
+  15   1        PWM2L = (on_value & 0x00FF);
+  16   1        PWM2H = ((on_value & 0xFF00) >> 8);
+  17   1        set_LOAD;
+  18   1      }
+  19          
+  20          int i;
+  21          void main(void)
+  22          {
+  23   1          P05_Quasi_Mode;
+  24   1          P30_Input_Mode;
+  25   1          PWM2_P05_OUTPUT_ENABLE;
+  26   1          PWM_IMDEPENDENT_MODE;
+  27   1          PWM_CLOCK_DIV_8;
+  28   1          PWM_set_period(2000);
+  29   1      /**********************************************************************
+  30   1        PWM frequency = Fpwm/((PWMPH,PWMPL) + 1) <Fpwm = Fsys/PWM_CLOCK_DIV> 
+  31   1                      = (16MHz/8)/(0x7CF + 1)
+  32   1                      = 1KHz (1ms)
+  33   1      ***********************************************************************/  
+  34   1          PWM2H = 0x00;
+  35   1          PWM2L = 0x00;
+  36   1          set_LOAD;
+  37   1          set_PWMRUN;
+  38   1          while(1){
+  39   2            for(i = 0; i <= 2000; i += 10)
+  40   2              {
+  41   3                  PWM_set_on(i);
+  42   3                  Timer0_Delay1ms(100);
+  43   3          }
+  44   2          }
+  45   1        }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    133    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.0.0   MAIN                                                              08/26/2020 14:36:28 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

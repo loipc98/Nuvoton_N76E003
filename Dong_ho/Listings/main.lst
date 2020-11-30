@@ -1,0 +1,93 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              08/24/2020 15:58:50 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Include) DEFINE(FOSC_160000) D
+                    -EBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "Function_define.h"
+   3          #include "SFR_Macro.h"
+   4          #include "Common.h"
+   5          #include "Delay.h"
+   6                  
+   7          char so[]= {0xEB, 0x88, 0xB3, 0xBA, 0xD8, 0x7A, 0x7B, 0xA8, 0xFB, 0xFA};
+   8          #define led1 P13
+   9          #define led2 P12
+  10          #define led3 P11
+  11          #define led4 P10
+  12          #define on 0
+  13          #define off 1
+  14          #define DATA P03
+  15          #define LATCH_CLK P17
+  16          #define SH_CLK P15
+  17          
+  18          void IE74595_Out_Byte(unsigned char b)
+  19          {
+  20   1        unsigned char i;
+  21   1        for(i=0; i<8; i++)
+  22   1        {
+  23   2          DATA = b& (0x80>>i); // lay tung bit cua byte b gui 
+  24   2          SH_CLK=0;
+  25   2          SH_CLK=1;
+  26   2        }
+  27   1          LATCH_CLK= 0;
+  28   1          LATCH_CLK= 1;
+  29   1      }
+  30          
+  31          void hien_Thi(unsigned char gio, unsigned char phut)
+  32          {
+  33   1        unsigned char chuc_gio, chuc_phut, donvi_gio, donvi_phut,i;
+  34   1        chuc_gio= gio/10; donvi_gio= gio%10;
+  35   1        chuc_phut= phut/10; donvi_phut= phut%10;
+  36   1        for(i=0;i<50;i++)
+  37   1        {
+  38   2          led1 = on, IE74595_Out_Byte(so[donvi_phut]); Timer0_Delay1ms(5); led1=off;
+  39   2          led2 = on, IE74595_Out_Byte(so[chuc_phut]); Timer0_Delay1ms(5); led2=off;
+  40   2          led3 = on, IE74595_Out_Byte(so[donvi_gio]); Timer0_Delay1ms(5); led3=off;
+  41   2          led4 = on, IE74595_Out_Byte(so[chuc_gio]); Timer0_Delay1ms(5); led4=off;
+  42   2      
+  43   2        }
+  44   1      }
+  45            unsigned char gio= 3, phut = 59 , giay= 0;
+  46          void main()
+  47          {
+  48   1        P15_Quasi_Mode;
+  49   1        P17_Quasi_Mode;
+  50   1        P03_Quasi_Mode;
+  51   1        P10_Quasi_Mode;
+  52   1        P11_Quasi_Mode;
+  53   1        P12_Quasi_Mode;
+  54   1        P13_Quasi_Mode;
+C51 COMPILER V9.60.0.0   MAIN                                                              08/24/2020 15:58:50 PAGE 2   
+
+  55   1        P05_Quasi_Mode; 
+  56   1        while(1)
+  57   1        {
+  58   2          giay++;
+  59   2          P05=~P05;
+  60   2          hien_Thi(gio, phut);
+  61   2          if(giay >59) phut++;
+  62   2          if(phut > 59) gio++;
+  63   2          if(giay >59)giay=0;
+  64   2          if(phut >59) phut=0;
+  65   2          if(gio >23) gio=0;      
+  66   2        }
+  67   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    335    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     13       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

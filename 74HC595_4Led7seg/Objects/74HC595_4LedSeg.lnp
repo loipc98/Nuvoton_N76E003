@@ -1,0 +1,7 @@
+".\Objects\main.obj",
+".\Objects\Common.obj",
+".\Objects\Delay.obj",
+".\Objects\STARTUP.obj" 
+TO ".\Objects\74HC595_4LedSeg" 
+PRINT(".\Listings\74HC595_4LedSeg.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

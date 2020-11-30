@@ -1,0 +1,1 @@
+"crc.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\..\Include;..\CRC-32) DEFINE (FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\Listings\crc.lst) TABS (2) OBJECT(.\Objects\crc.obj)
